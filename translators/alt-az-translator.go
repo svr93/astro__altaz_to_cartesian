@@ -12,7 +12,7 @@ func ConvertAltAzRadiusToLocalCartezian(altR, azR, radius float64) (x, y, z floa
     return
 }
 
-func GetVelocityVector(altR, azR, radius, altRVel, azRVel, radiusVel float64) (x, y, z float64) {
+func GetLocCartVelVector(altR, azR, radius, altRVel, azRVel, radiusVel float64) (x, y, z float64) {
 
     x = radiusVel * math.Sin(azR) * math.Cos(altR) +
         radius * azRVel * math.Cos(azR) * math.Cos(altR) -
