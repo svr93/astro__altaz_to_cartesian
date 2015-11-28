@@ -2,11 +2,16 @@ package translators
 
 import (
     "math"
+    "github.com/gonum/matrix/mat64"
 )
 
 const comprCoeff = 1 / 298.3
 
 const eqEarthRadiusKm = 6378.137
+
+const antennaAngleR = 0
+
+var directionCosMatrix = mat64.NewDense(3, 3, nil)
 
 type GeoPos struct {
 
