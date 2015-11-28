@@ -77,3 +77,26 @@ func getDirectionCosMatrix(geoPos *GeoPos) *mat64.Dense {
 
     return directionCosMatrix
 }
+
+func ConvertLocalCartezianToECEF(xKmL, yKmL, zKmL float64, geoPos *GeoPos) (x, y, z float64) {
+
+    directionCosMatrix := getDirectionCosMatrix(geoPos)
+    inverseDirectionCosMatrix := mat64.NewDense(3, 3, nil)
+    inverseDirectionCosMatrix.Inverse(directionCosMatrix)
+
+    localCartezianMatrix := mat64.NewDense(3, 1, []float64{ xKmL, yKmL, zKmL })
+
+    stationXKm, stationYKm, stationZKm := convertGeoPosToCartesianPos(geoPos)
+    stationCartezianMatrix := mat64.NewDense(3, 1, []float64{ stationXKm, stationYKm, stationZKm })
+
+    mulMatrix := mat64.NewDense(3, 1, nil)
+    mulMatrix.Mul(inverseDirectionCosMatrix, localCartezianMatrix)
+    res := mat64.NewDense(3, 1, nil)
+    res.Add(mulMatrix, stationCartezianMatrix)
+
+    x = res.At(0, 0)
+    y = res.At(1, 0)
+    z = res.At(2, 0)
+
+    return
+}
