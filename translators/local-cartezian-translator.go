@@ -21,7 +21,7 @@ type GeoPos struct {
 func getComprInPos(geoPos *GeoPos) (comprInPos float64) {
 
     k := comprCoeff * (2 - comprCoeff)
-    comprInPos = math.Sqrt(1 - k * math.Pow(math.Sin(geoPos.LngR), 2))
+    comprInPos = math.Sqrt(1 - k * math.Pow(math.Sin(geoPos.LatR), 2))
     return
 }
 
@@ -30,11 +30,11 @@ func convertGeoPosToCartesianPos(geoPos *GeoPos) (xKm, yKm, zKm float64) {
     comprInPos := getComprInPos(geoPos)
     posEarthRadiusKm := eqEarthRadiusKm / comprInPos
 
-    xKm = (posEarthRadiusKm + geoPos.HKm) * math.Cos(geoPos.LngR) * math.Cos(geoPos.LatR)
+    xKm = (posEarthRadiusKm + geoPos.HKm) * math.Cos(geoPos.LatR) * math.Cos(geoPos.LngR)
 
-    yKm = (posEarthRadiusKm + geoPos.HKm) * math.Cos(geoPos.LngR) * math.Sin(geoPos.LatR)
+    yKm = (posEarthRadiusKm + geoPos.HKm) * math.Cos(geoPos.LatR) * math.Sin(geoPos.LngR)
 
-    zKm = (posEarthRadiusKm + geoPos.HKm) * math.Sin(geoPos.LngR)
+    zKm = (posEarthRadiusKm + geoPos.HKm) * math.Sin(geoPos.LatR)
 
     return
 }
@@ -44,35 +44,35 @@ func getDirectionCosMatrix(geoPos *GeoPos) *mat64.Dense {
     var val float64
     directionCosMatrix := mat64.NewDense(3, 3, nil)
 
-    val = - math.Sin(geoPos.LngR) * math.Cos(geoPos.LatR) * math.Cos(antennaAngleR) -
-            math.Sin(geoPos.LatR) * math.Sin(antennaAngleR)
+    val = - math.Sin(geoPos.LatR) * math.Cos(geoPos.LngR) * math.Cos(antennaAngleR) -
+            math.Sin(geoPos.LngR) * math.Sin(antennaAngleR)
     directionCosMatrix.Set(0, 0, val)
 
-    val =   math.Cos(geoPos.LngR) * math.Cos(geoPos.LatR)
+    val =   math.Cos(geoPos.LatR) * math.Cos(geoPos.LngR)
     directionCosMatrix.Set(0, 1, val)
 
-    val =   math.Sin(geoPos.LngR) * math.Cos(geoPos.LatR) * math.Sin(antennaAngleR) -
-            math.Sin(geoPos.LatR) * math.Cos(antennaAngleR)
+    val =   math.Sin(geoPos.LatR) * math.Cos(geoPos.LngR) * math.Sin(antennaAngleR) -
+            math.Sin(geoPos.LngR) * math.Cos(antennaAngleR)
     directionCosMatrix.Set(0, 2, val)
 
-    val = - math.Sin(geoPos.LngR) * math.Sin(geoPos.LatR) * math.Cos(antennaAngleR) +
-            math.Cos(geoPos.LatR) * math.Sin(antennaAngleR)
+    val = - math.Sin(geoPos.LatR) * math.Sin(geoPos.LngR) * math.Cos(antennaAngleR) +
+            math.Cos(geoPos.LngR) * math.Sin(antennaAngleR)
     directionCosMatrix.Set(1, 0, val)
 
-    val =   math.Cos(geoPos.LngR) * math.Sin(geoPos.LatR)
+    val =   math.Cos(geoPos.LatR) * math.Sin(geoPos.LngR)
     directionCosMatrix.Set(1, 1, val)
 
-    val =   math.Sin(geoPos.LngR) * math.Sin(geoPos.LatR) * math.Sin(antennaAngleR) +
-            math.Cos(geoPos.LatR) * math.Cos(antennaAngleR)
+    val =   math.Sin(geoPos.LatR) * math.Sin(geoPos.LngR) * math.Sin(antennaAngleR) +
+            math.Cos(geoPos.LngR) * math.Cos(antennaAngleR)
     directionCosMatrix.Set(1, 2, val)
 
-    val =   math.Cos(geoPos.LngR) * math.Cos(antennaAngleR)
+    val =   math.Cos(geoPos.LatR) * math.Cos(antennaAngleR)
     directionCosMatrix.Set(2, 0, val)
 
-    val =   math.Sin(geoPos.LngR)
+    val =   math.Sin(geoPos.LatR)
     directionCosMatrix.Set(2, 1, val)
 
-    val = - math.Cos(geoPos.LngR) * math.Sin(antennaAngleR)
+    val = - math.Cos(geoPos.LatR) * math.Sin(antennaAngleR)
     directionCosMatrix.Set(2, 2, val)
 
     return directionCosMatrix
